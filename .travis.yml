@@ -1,0 +1,40 @@
+language: node_js
+node_js:
+- '8'
+env:
+  global:
+  - GH_USER_EMAIL="travis@example.org"
+  - GH_USER_NAME="cozy-bot"
+  - DEPLOY_REPOSITORY="git@github.com:konnectors/aprr.git"
+  - secure: LUTFv8MLpp/EQngz80YYPf4obdAO6zaoOUKvbwwdXAMji6kUQqLYGOrfhSIHhK6kONEgJlMtGqASW4EijDUtmjybBwNkYFaYF7SiDJu84TDi2sttw+gGJXxrTZxo/+tvh97gMwXe8KXhiKzShP/ql5YezB7FxBKv6UaOco8J+LDILbXE1ILprZMvP63vAWTQZ1+fPmqD1DJvl/j4JzUUfsXahUj+oNjCFBu4q0ZfoeHNlpEdzbNclxN9ViH3/tZ7ekECujD3COWSMJCbmXEKI2hKjgRQdzGDVgz8jBSZ5plvmyQTOlHLCQtM76LirDiWREV9JTDmGNI5GfpDY4HrEYmLkKDeLdtumToY03EpaqM47lb6W0/NTYxGwrYPbc3Ex+klaCMJrjUi2C/QPoxyNNFmD+TCB+KbzhewILuJ/3fAIWHrQuY+kDPjuaC5FcdcnSMaA53qeuoLD9LeDzmbkOrG209bTe4P5DVRMull5yofz14lmO4LnORdVbbHdSnQDVibLfg9/ywqyZu3YdUZ9Gawd0ZrXcnG72boZotAA2USTF5mOQO3GrLWtmetD1O7MUpUEiRzBXaMnh3+g46BO7bSSOGVt+oW4/EAgRKeBsCUWy2zgOZqf59/UQUIq7RyEYwokOVG6hURgCABVJGFlJ4SVSMYwfYZVUEyr7NN7R0=
+cache:
+  yarn: true
+  directories:
+  - node_modules
+branches:
+  except:
+  - build
+  - build-debug
+script:
+- yarn lint
+- yarn build
+deploy:
+- provider: script
+  skip-cleanup: true
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
+  on:
+    branch: master
+- provider: script
+  skip-cleanup: true
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
+  on:
+    tags: true
+before_install:
+- openssl aes-256-cbc -K $encrypted_79893e17884d_key -iv $encrypted_79893e17884d_iv
+  -in github_deploy_key.enc -out /tmp/github_deploy_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/github_deploy_key
+- ssh-add /tmp/github_deploy_key
+after_deploy:
+- rm /tmp/github_deploy_key
+- ssh-add -D
