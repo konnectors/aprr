@@ -72,7 +72,10 @@ async function authenticate(username, password) {
     simple: false,
     // the validate function will check if user is logged
     validate: (statusCode, $) => {
-      if ($('#ctl00_plhCustomerArea_customerArea_LinkButtonSeDeconnecter').length === 1) {
+      if (
+        $('#ctl00_plhCustomerArea_customerArea_LinkButtonSeDeconnecter')
+          .length === 1
+      ) {
         return true
       } else {
         return false
@@ -103,8 +106,10 @@ function parseBills($) {
     vendor: 'aprr',
     currency: '€',
     fileurl: `${billUrl}?facture=${bill.id}`,
-    filename: `${bill.date.format('YYYY-MM')}_${String(bill.amount)
-                          .replace('.', ',')}€_${String(bill.id)}.pdf`,
+    filename: `${bill.date.format('YYYY-MM')}_${String(bill.amount).replace(
+      '.',
+      ','
+    )}€_${String(bill.id)}.pdf`,
     date: bill.date.toDate(),
     metadata: {
       // it can be interesting that we add the date of import. This is not mandatory but may be
