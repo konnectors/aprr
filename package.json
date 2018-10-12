@@ -18,7 +18,8 @@
   "eslintIgnore": [
     "build"
   ],
-  "scripts": { "start": "node ./src/index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
     "dev": "cozy-run-dev",
     "standalone": "cozy-run-standalone",
     "pretest": "npm run clean",
@@ -33,7 +34,8 @@
     "travisDeployKey": "./bin/generate_travis_deploy_key"
   },
   "dependencies": {
-    "cozy-konnector-libs": "4.11.2"
+    "cozy-konnector-libs": "4.11.2",
+    "moment": "2.22.2"
   },
   "devDependencies": {
     "copy-webpack-plugin": "4.5.2",
