@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "name": "APRR",
   "type": "konnector",
   "language": "node",
@@ -8,7 +8,9 @@
   "source": "git://github.com/konnectors/aprr.git",
   "editor": "sebdalink",
   "vendor_link": "http://www.aprr.fr/fr",
-  "categories": ["transport"],
+  "categories": [
+    "transport"
+  ],
   "fields": {
     "login": {
       "type": "text"
@@ -43,14 +45,19 @@
     },
     "accounts": {
       "type": "io.cozy.accounts",
-      "verbs": ["GET"]
+      "verbs": [
+        "GET"
+      ]
     }
   },
   "developer": {
     "name": "Sébastien Duval (@sebdalink)",
     "url": "https://github.com/sebdalink"
   },
-  "langs": ["fr", "en"],
+  "langs": [
+    "fr",
+    "en"
+  ],
   "locales": {
     "fr": {
       "short_description": "Récupère vos données des télépéages APRR",
