@@ -102,5 +102,6 @@
       }
     }
   },
+  "banksTransactionRegExp": "\\baprr\\b",
   "manifest_version": "2"
 }
