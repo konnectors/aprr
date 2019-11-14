@@ -23,7 +23,10 @@ const request = requestFactory({
   json: false,
   // this allows request-promise to keep cookies between requests
   jar: true,
-  debug: false
+  debug: false,
+  headers: {
+    'Accept-Language': 'fr'
+  }
 })
 
 const baseUrl = 'https://espaceclient.aprr.fr/aprr'
@@ -46,7 +49,8 @@ async function start(fields) {
   log('info', 'Saving data to Cozy')
   await saveBills(bills, fields.folderPath, {
     identifiers: ['aprr'],
-    contentType: 'application/pdf'
+    contentType: 'application/pdf',
+    requestInstance: request
   })
 
   log('info', 'Fetching the list of consumptions')
@@ -59,6 +63,7 @@ async function start(fields) {
 
 async function authenticate(username, password) {
   return signin({
+    requestInstance: request,
     url: loginUrl,
     formSelector: 'form',
     formData: $ => {
@@ -70,8 +75,7 @@ async function authenticate(username, password) {
         ...hiddenFields,
         ctl00$PlaceHolderMain$TextBoxLogin: username,
         ctl00$PlaceHolderMain$TextBoxPass: password,
-        'ctl00$PlaceHolderMain$ImageButtonConnection.x': 54,
-        'ctl00$PlaceHolderMain$ImageButtonConnection.y': 12
+        __EVENTTARGET: 'ctl00$PlaceHolderMain$LbnButtonConnection'
       }
     },
     json: false,
