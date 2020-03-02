@@ -3,6 +3,7 @@ node_js:
 - '12'
 env:
   global:
+  - MATTERMOST_CHANNEL=publication
   # REGISTRY_TOKEN(editor=cozy, app=aprr)
   - secure: LUTFv8MLpp/EQngz80YYPf4obdAO6zaoOUKvbwwdXAMji6kUQqLYGOrfhSIHhK6kONEgJlMtGqASW4EijDUtmjybBwNkYFaYF7SiDJu84TDi2sttw+gGJXxrTZxo/+tvh97gMwXe8KXhiKzShP/ql5YezB7FxBKv6UaOco8J+LDILbXE1ILprZMvP63vAWTQZ1+fPmqD1DJvl/j4JzUUfsXahUj+oNjCFBu4q0ZfoeHNlpEdzbNclxN9ViH3/tZ7ekECujD3COWSMJCbmXEKI2hKjgRQdzGDVgz8jBSZ5plvmyQTOlHLCQtM76LirDiWREV9JTDmGNI5GfpDY4HrEYmLkKDeLdtumToY03EpaqM47lb6W0/NTYxGwrYPbc3Ex+klaCMJrjUi2C/QPoxyNNFmD+TCB+KbzhewILuJ/3fAIWHrQuY+kDPjuaC5FcdcnSMaA53qeuoLD9LeDzmbkOrG209bTe4P5DVRMull5yofz14lmO4LnORdVbbHdSnQDVibLfg9/ywqyZu3YdUZ9Gawd0ZrXcnG72boZotAA2USTF5mOQO3GrLWtmetD1O7MUpUEiRzBXaMnh3+g46BO7bSSOGVt+oW4/EAgRKeBsCUWy2zgOZqf59/UQUIq7RyEYwokOVG6hURgCABVJGFlJ4SVSMYwfYZVUEyr7NN7R0=
   # MATTERMOST_HOOK_URL
@@ -26,7 +27,7 @@ deploy:
     branch: master
 - provider: script
   skip-cleanup: true
-  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish --postpublish mattermost
   on:
     tags: true
 before_install:
