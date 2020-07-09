@@ -80,10 +80,7 @@ async function authenticate(username, password) {
     simple: false,
     // the validate function will check if user is logged
     validate: (statusCode, $) => {
-      if (
-        $('#ctl00_plhCustomerArea_customerArea_LinkButtonSeDeconnecter')
-          .length === 1
-      ) {
+      if ($('#ctl00_plhCustomerArea_customerArea_LbnDisconnect').length === 1) {
         return true
       } else {
         return false
