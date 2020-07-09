@@ -7,9 +7,7 @@ process.env.SENTRY_DSN =
 const {
   BaseKonnector,
   requestFactory,
-  signin,
   scrape,
-  saveBills,
   log,
   hydrateAndFilter,
   addData
@@ -37,9 +35,7 @@ const consumptionUrl = baseUrl + '/_LAYOUTS/APRR-EDGAR/GetTrajets.aspx'
 module.exports = new BaseKonnector(start)
 
 async function start(fields) {
-  log('info', 'Authenticating ...')
-  await authenticate(fields.login, fields.password)
-  log('info', 'Successfully logged in')
+  await authenticate.bind(this)(fields.login, fields.password)
 
   log('info', 'Fetching the list of bills')
   let $ = await request(billUrl)
@@ -47,10 +43,12 @@ async function start(fields) {
   log('info', 'Parsing bills')
   const bills = parseBills($)
   log('info', 'Saving data to Cozy')
-  await saveBills(bills, fields.folderPath, {
+  await this.saveBills(bills, fields, {
     identifiers: ['aprr'],
     contentType: 'application/pdf',
-    requestInstance: request
+    requestInstance: request,
+    fileIdAttributes: ['id'],
+    keys: ['id']
   })
 
   log('info', 'Fetching the list of consumptions')
@@ -62,7 +60,7 @@ async function start(fields) {
 }
 
 async function authenticate(username, password) {
-  return signin({
+  return this.signin({
     requestInstance: request,
     url: loginUrl,
     formSelector: 'form',
@@ -113,6 +111,7 @@ function parseBills($) {
 
   return bills.map(bill => ({
     ...bill,
+    vendorRef: bill.id,
     vendor: 'aprr',
     currency: '€',
     fileurl: `${billUrl}?facture=${bill.id}`,
@@ -120,14 +119,7 @@ function parseBills($) {
       '.',
       ','
     )}€_${String(bill.id)}.pdf`,
-    date: bill.date.toDate(),
-    metadata: {
-      // it can be interesting that we add the date of import. This is not mandatory but may be
-      // usefull for debugging or data migration
-      importDate: new Date(),
-      // document version, usefull for migration after change of document structure
-      version: 1
-    }
+    date: bill.date.toDate()
   }))
 }
 
