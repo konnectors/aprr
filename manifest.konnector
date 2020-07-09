@@ -44,10 +44,7 @@
       "type": "io.cozy.files"
     },
     "accounts": {
-      "type": "io.cozy.accounts",
-      "verbs": [
-        "GET"
-      ]
+      "type": "io.cozy.accounts"
     }
   },
   "developer": {
@@ -102,6 +99,10 @@
       }
     }
   },
+  "features": [
+    "LOGIN_OK",
+    "METADATA_DEDUP"
+  ],
   "banksTransactionRegExp": "\\baprr\\b",
   "manifest_version": "2"
 }
