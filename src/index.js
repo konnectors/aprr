@@ -10,7 +10,7 @@ const {
   scrape,
   log,
   hydrateAndFilter,
-  addData,
+  addData
 } = require('cozy-konnector-libs')
 
 const moment = require('moment')
@@ -23,8 +23,8 @@ const request = requestFactory({
   jar: true,
   debug: false,
   headers: {
-    'Accept-Language': 'fr',
-  },
+    'Accept-Language': 'fr'
+  }
 })
 
 const baseUrl = 'https://espaceclient.aprr.fr/aprr'
@@ -48,7 +48,7 @@ async function start(fields) {
     contentType: 'application/pdf',
     requestInstance: request,
     fileIdAttributes: ['id'],
-    keys: ['id'],
+    keys: ['id']
   })
 
   log('info', 'Fetching the list of consumptions')
@@ -64,9 +64,9 @@ async function authenticate(username, password) {
     requestInstance: request,
     url: loginUrl,
     formSelector: 'form',
-    formData: ($) => {
+    formData: $ => {
       const hiddenFields = {}
-      $('input[type="hidden"]').each(function (i, elt) {
+      $('input[type="hidden"]').each(function(i, elt) {
         hiddenFields[elt.attribs.name] = elt.attribs.value
       })
       return {
@@ -74,7 +74,7 @@ async function authenticate(username, password) {
         ctl00$PlaceHolderMain$ConsoBlocTemplateControl$ConnexionAscx$TbxLogin: username,
         ctl00$PlaceHolderMain$ConsoBlocTemplateControl$ConnexionAscx$TbxPassword: password,
         __EVENTTARGET:
-          'ctl00$PlaceHolderMain$ConsoBlocTemplateControl$ConnexionAscx$LbnButtonConnection',
+          'ctl00$PlaceHolderMain$ConsoBlocTemplateControl$ConnexionAscx$LbnButtonConnection'
       }
     },
     json: false,
@@ -86,7 +86,7 @@ async function authenticate(username, password) {
       } else {
         return false
       }
-    },
+    }
   })
 }
 
@@ -97,19 +97,17 @@ function parseBills($) {
       id: 'td:nth-child(1)',
       amount: {
         sel: 'td:nth-child(3)',
-        parse: (amount) =>
-          parseFloat(amount.replace(' €', '').replace(',', '.')),
+        parse: amount => parseFloat(amount.replace(' €', '').replace(',', '.'))
       },
       date: {
         sel: 'td:nth-child(2)',
-        parse: (date) =>
-          moment(date, 'MMM YYYY').add(moment().utcOffset(), 'm'),
-      },
+        parse: date => moment(date, 'MMM YYYY').add(moment().utcOffset(), 'm')
+      }
     },
     '#divMyInvoicesContent table tbody tr'
   )
 
-  return bills.map((bill) => ({
+  return bills.map(bill => ({
     ...bill,
     vendorRef: bill.id,
     vendor: 'aprr',
@@ -119,7 +117,7 @@ function parseBills($) {
       '.',
       ','
     )}€_${String(bill.id)}.pdf`,
-    date: bill.date.toDate(),
+    date: bill.date.toDate()
   }))
 }
 
@@ -127,7 +125,7 @@ async function fetchConsumptions(consumptionUrl) {
   const requestJSON = requestFactory({
     cheerio: false,
     json: true,
-    jar: true,
+    jar: true
   })
 
   return await requestJSON({
@@ -135,17 +133,17 @@ async function fetchConsumptions(consumptionUrl) {
     method: 'POST',
     body: {
       startIndex: '1',
-      itemsCountInPage: '101',
+      itemsCountInPage: '101'
     },
     json: true,
     headers: {
-      'X-Requested-With': 'XMLHttpRequest',
-    },
+      'X-Requested-With': 'XMLHttpRequest'
+    }
   })
 }
 
 function parseConsumptions(consumptions) {
-  return consumptions.map((consumption) => {
+  return consumptions.map(consumption => {
     return {
       badgeNumber: consumption.NumeroSupport,
       date: moment(consumption.Date, 'DD/MM/YYYY').toDate(),
@@ -158,8 +156,8 @@ function parseConsumptions(consumptions) {
       metadata: {
         dateImport: new Date(),
         vendor: 'aprr',
-        version: 1,
-      },
+        version: 1
+      }
     }
   })
 }
@@ -167,6 +165,6 @@ function parseConsumptions(consumptions) {
 function saveConsumptions(consumptions) {
   const DOCTYPE = 'io.cozy.aprr.consumptions'
   return hydrateAndFilter(consumptions, DOCTYPE, {
-    keys: ['badgeNumber', 'date', 'inPlace', 'outPlace'],
-  }).then((entries) => addData(entries, DOCTYPE))
+    keys: ['badgeNumber', 'date', 'inPlace', 'outPlace']
+  }).then(entries => addData(entries, DOCTYPE))
 }
